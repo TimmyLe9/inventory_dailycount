@@ -1,0 +1,58 @@
+function DailyCount() {
+  var Sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Short-Term Inv.");
+  var Date = Sheet.getRange("D22").getValue();
+  var Message = "";
+
+    /* Item Checking */
+    for (var i = 3; i <= 13; i++) {
+      if (Sheet.getRange(i,2).getValue() <= Sheet.getRange(i,7).getValue()) {
+        Message += Sheet.getRange(i,1).getValue() + ": " + Sheet.getRange(i,2).getValue() + "\n";
+        }
+    }
+
+    /* Anything else box */
+    if (Sheet.getRange("B14").getValue() != "") {
+      Message += "\n" + Sheet.getRange("B14").getValue(); // update this also when updating the cell
+    }
+
+    /* Email */
+    if (Sheet.getRange("B22").isChecked()) { // checkbox
+      if (Message == " \n") {
+        Message = "Nothing is low. shorturl.at/hjDIP"
+      }
+      MailApp.sendEmail("kftcolumbus@gmail.com", "KFT Stock " + Date, Message + "\n" + "shorturl.at/hjDIP");
+    }
+
+   Sheet.getRange("B22").setValue("FALSE"); // checkbox
+
+}
+
+function Warehouse() {
+  var Sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Warehouse");
+  var Message = "";
+  var Date = Sheet.getRange("B4").getValue();
+
+  if (Sheet.getRange("B3").isChecked()) {
+    Message = "Warehouse inventory has been counted for " + Date + ".\n" + "shorturl.at/mxBR6";
+    Sheet.getRange("B3").setValue("FALSE");
+  } else {
+    Message = "**NOT COUNTED** | Warehouse inventory was NOT counted for today, " + Date + ".\n" + "shorturl.at/mxBR6";
+  }
+
+MailApp.sendEmail("kftcolumbus@gmail.com", "KFT Warehouse " + Date, Message);
+}
+
+function clrWH() {
+  var Sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Warehouse");
+  Sheet.getRange("B7:B67").clearContent();
+  Sheet.getRange("B71:B96").clearContent();
+  Sheet.getRange("B100:B125").clearContent();
+}
+
+function onEdit(){
+  var WH = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Warehouse");
+  if(WH.getRange("B128").isChecked()) {
+    clrWH();
+    WH.getRange("B128").setValue("FALSE");
+  }
+}
